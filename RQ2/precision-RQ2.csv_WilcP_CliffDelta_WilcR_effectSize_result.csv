@@ -1,0 +1,10 @@
+paired methods,Wilcoxon p,Cliff's delta,effect size (delta),Wilcoxon r, effect size (r) ,,Wilcoxon p,,Cliff's delta
+CAPE vs. a-index,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. PageRank_BR,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. PageRank,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. g-core,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. h-index,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. k-core,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. PageRank_IVOL,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
+CAPE vs. ElementRank,2.1409202584599107E-4,0.8888888888888888,large,-0.867385509,large,,0.0002 ,,0.8889 
+CAPE vs. Pride,1.8015638819446345E-4,1,large,-0.877650426,large,,0.0002 ,,1.0000 
