@@ -4,7 +4,7 @@ This repository contains data-prep scripts and experiment runners for the KeyDes
 
 ## What is in the repo
 
-- `CAPE_KeyDesign.py`: builds TextCNN + GCN embeddings per project and writes a `emb.csv` embedding file for each project.
+- `CAPE_KeyDesign.py`: provides shared TextCNN and graph-processing functions used by the foldwise representation-learning pipeline.
 - `data_process/`: scripts to derive tokens, nodes, edges, and labels from raw Java sources, network graphs, and metric CSVs.
 - `RQ1/downstream_task/`: scripts for downstream classification and evaluation.
 
@@ -43,46 +43,15 @@ The scripts imply the following pipeline. Each step writes files under `dataset_
 
 ## Experiments and outputs
 
-### Embedding generation
+### Within-project evaluation
 
-- Script: `CAPE_KeyDesign.py`
-- Reads (per project, from `dataset_keyDesign_Sora/<project>/`):
-  - `tokens_map.txt` – tokenized source code sequences
-  - `Process-Binary.csv` – node attributes and KeyDesign labels
-  - `vocab_emb_dict_30.csv` – pre-trained word embedding matrix
-  - `edges_weight.txt` – weighted directed edges between nodes (class dependencies)
-- Output: `hyq_emb_AN_Sora_non-dw.csv` – 32‑dimensional hybrid embeddings for all nodes in the project
+- Entry point: `RQ1/downstream_task/keyDesign_within.py`
+- Foldwise representation learning: `foldwise_experiment/representation_foldwise.py`
+- Repeated two-fold evaluation and downstream Random Forest: `foldwise_experiment/run_within_project.py`
+- In each of the 100 repetitions, a new stratified 2-fold split is generated.
+- For every fold, the representation models are newly trained using the training fold, and the same train/test indices are used for the downstream Random Forest evaluation.
+- Required files for each project: `tokens_map.txt`, `Process-Binary.csv`, and `edges_weight.txt`.
 
-### Downstream classification 
-
-- Script: `RQ1/downstream_task/cross_boot_v1.py`
-- Inputs:
-  - `dataset_keyDesign_FGCS/<project>/Process-Binary.csv`
-  - CGCN embeddings like `CGCN_emb_FGCS_directed_ins.csv`
-  - `configs/cross_project_demo.txt`
-- Output: CSV metrics under `cross_results/source_results_demo-v1/FGCS/`
-
-## Experimental protocol: train/test isolation in cross‑validation
-
-In each 2‑fold cross‑validation round within a project:
-- Nodes are split into `train_nodes` and `test_nodes` (no overlap).
-- All edges incident to `test_nodes` are removed to form `G_train`.
-- Word2Vec is trained only on walks over `G_train`.
-- GCN is trained only on `G_train` using `FullBatchNodeGenerator`.
-- CNN is trained only on `train_nodes` token sequences.
-- The fusion network is trained only on `train_nodes`.
-- After training, weights are frozen; full graph (`G`) is used for inference to obtain test‑node embeddings.
-
-## Mapping between paper components and source files
-
-| Paper component | Source file / function |
-|----------------|------------------------|
-| Data preprocessing | `data_process/*.py` |
-| Semantic encoder | `CAPE_KeyDesign.py` - `TextCNN_model()` |
-| Structural encoder | `CAPE_KeyDesign.py` - `_compute_initial_node_attributes()`, GCN |
-| Fusion & joint training | `CAPE_KeyDesign.py` - `mix()` |
-| Embedding generation | `CAPE_KeyDesign.py` main loop |
-| Downstream RF | `RQ1/downstream_task/cross_boot_v1.py` |
 
 
 
